@@ -37,9 +37,6 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# UV specific
-# uv.lock # 通常应提交，但实验中可以选择忽略
-
 # 实验生成的目录
 perf_test/
 pip_env/
