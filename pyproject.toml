@@ -4,4 +4,49 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "flask>=3.1.0",
+    "numpy==1.22.0",
+    "pandas==1.4.0",
+    "requests>=2.32.3",
+    "torch>=2.0.0,<2.7.0",
+    "torchvision>=0.15.0,<0.22.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.3.5",
+]
+lint = [
+    "black>=25.1.0",
+    "flake8>=7.2.0",
+]
+
+[dependency-groups]
+docs = [
+    "sphinx>=8.1.3",
+]
+
+# PyTorch 自定义索引配置
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true # 只有明确指定的包会从这个索引下载
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true # 只有明确指定的包会从这个索引下载
+
+# 基于环境条件选择不同的包源
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", marker = "platform_system == 'Windows'" },
+  { index = "pytorch-cpu", marker = "platform_system == 'Darwin'" },
+  { index = "pytorch-cu124", marker = "platform_system == 'Linux'" },
+]
+torchvision = [
+  { index = "pytorch-cpu", marker = "platform_system == 'Windows'" },
+  { index = "pytorch-cpu", marker = "platform_system == 'Darwin'" },
+  { index = "pytorch-cu124", marker = "platform_system == 'Linux'" },
+]

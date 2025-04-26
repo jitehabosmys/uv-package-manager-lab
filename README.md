@@ -94,22 +94,34 @@
 
 ## 实验四：依赖解析与冲突处理
 
-1. **添加特定版本依赖**
+1. **添加第一个限制版本依赖**
    ```bash
    # 所有系统
-   uv add "numpy<2.0.0"
+   uv add "numpy==1.22.0"
    ```
 
 2. **尝试添加冲突版本**
    ```bash
    # 所有系统
-   uv add "pandas>=2.0.0"  # 这可能导致依赖冲突
+   uv add "pandas==1.3.5"  # 这会导致依赖冲突，因为 pandas 1.3.5 需要 numpy<1.22.0
+   ```
+   预期输出类似：
+   ```
+   error: No solution found when resolving dependencies:
+   ╰─▶ Because pandas==1.3.5 depends on numpy>=1.20.0,<1.22.0 and you require numpy==1.22.0, we can conclude that pandas==1.3.5 is not compatible with your project.
    ```
 
 3. **查看冲突信息并解决**
    ```bash
    # 所有系统
-   uv add "pandas<2.0.0"  # 使用兼容版本
+   uv add "pandas==1.4.0"  # 使用兼容 numpy 1.22.0 的 pandas 版本
+   ```
+
+4. **也可以尝试直接安装两个冲突的同名包版本**
+   ```bash
+   # 所有系统
+   uv add "django==3.2.0"
+   uv add "django==4.2.0"  # 这会导致直接冲突，尝试安装同一个包的两个不同版本
    ```
 
 ## 实验五：可选依赖与依赖组
@@ -134,7 +146,7 @@
 3. **创建测试文件**
    ```bash
    # 所有系统
-   uv sync --extra test
+   uv sync --extra test # 环境会被同步为只包含主要依赖和指定的可选依赖组
    ```
 
 4. **运行测试**
@@ -146,7 +158,7 @@
 5. **添加依赖组**
    ```bash
    # 所有系统
-   uv add sphinx --group docs
+   uv add sphinx --group docs # 开发依赖，发布时不会被包含在元数据中
    ```
 
 6. **从特定组安装依赖**
@@ -164,7 +176,7 @@
    [[tool.uv.index]]
    name = "pytorch-cpu"
    url = "https://download.pytorch.org/whl/cpu"
-   explicit = true
+   explicit = true   
    
    [tool.uv.sources]
    torch = { index = "pytorch-cpu" }
@@ -203,6 +215,7 @@
 
 2. **更新环境**
    ```bash
+   
    # 所有系统
    uv sync
    ```
@@ -295,4 +308,4 @@
 4. 使用便捷性
 5. 冲突处理能力
 
-记录实验结果并分析 UV 的优缺点以及适用场景。 
+记录实验结果并分析 UV 的优缺点以及适用场景。
